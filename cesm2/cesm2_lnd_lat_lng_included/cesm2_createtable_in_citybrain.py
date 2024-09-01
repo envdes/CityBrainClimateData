@@ -32,7 +32,7 @@ def cesm2_createtable_in_citybrain_workflow():
   start_time = variables['start_time']
   end_time = variables['end_time']
   cirybrain_tablename = f"{component}_{frequency}_{tablename}"
-  remote_store_dir = f'test/{forcing_variant}/{component}/{frequency}/{tablename}_parquet' # 目录
+  remote_store_dir = f'test/{forcing_variant}/{component}/{frequency}/{tablename}_parquet'
 
   # Create table in citybrain
   columns = [

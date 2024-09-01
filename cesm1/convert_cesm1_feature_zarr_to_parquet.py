@@ -58,11 +58,11 @@ def convert_cesm1_feature_zarr_to_parquet_workflow(component,frequency,tablename
             workflow(component,frequency,tablename,featurename,slice_start, slice_end)
             endtime = time.time()
             totaltime = (endtime - starttime)/60
-            print(f"completed index {slice_start} - {slice_end-1} with {totaltime} minutes")
+            print(f"completed index {slice_start} - {slice_end-1}; {totaltime} minutes")
         else:
             slice_end = total_timestamps
             starttime = time.time()
             workflow(component,frequency,tablename,featurename,slice_start, slice_end)
             endtime = time.time()
             totaltime = (endtime - starttime)/60
-            print(f"completed index {slice_start} - {slice_end-1} with {totaltime} minutes")
+            print(f"completed index {slice_start} - {slice_end-1}; {totaltime} minutes")
