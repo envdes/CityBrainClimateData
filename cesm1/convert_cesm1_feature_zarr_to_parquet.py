@@ -34,7 +34,7 @@ def convert_cesm1_feature_zarr_to_parquet_workflow(component,frequency,tablename
         # change the datetime coordinates
         ds = ds.assign_coords(time = ds.indexes["time"].to_datetimeindex())
 
-        # convert as dataframe
+        # convert to dataframe
         df = ds[featurename].to_dataframe()
         del ds
         gc.collect()
