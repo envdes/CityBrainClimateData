@@ -70,22 +70,22 @@ def convert_cesm2_lnd_feature_zarr_to_parquet_workflow(forcing_variant,component
 
 
     def workflow(subgrid_info,fullds,member_id_idx,slice_start,slice_end):
-        ###### one slice ######
+        # one slice 
         oneD_subds = fullds.isel(member_id=member_id_idx,time=slice(slice_start,slice_end))
         
-        ###### 1D->3D ######
+        # 1D->3D
         clm_ls = [featurename]
         clm_var = clm_ls[0]
         testds = load_clm_subgrid_info(oneD_subds, subgrid_info)
         threeD_subds = testds.get3d_var(clm_var)
         
-        ###### change the datetime coordinates and convert as dataframe ######
+        # change the datetime coordinates and convert to dataframe
         threeD_subdf = threeD_subds[featurename].assign_coords(time = threeD_subds[featurename].indexes["time"].to_datetimeindex()).to_dataframe()
         
         del oneD_subds
         gc.collect()
         
-        ###### save as parquet 
+        # save as parquet 
         newfolder = tablename+'_parquet'
         member_id = threeD_subdf.index[0][0]
         parquet_dir = f"../../../datadisk/cesm2_parquet/{forcing_variant}/{component}/{frequency}/{newfolder}"
@@ -100,7 +100,7 @@ def convert_cesm2_lnd_feature_zarr_to_parquet_workflow(forcing_variant,component
     # current_path:'/datadisk/cesm2_raw/cmip6/atm/daily'
     # CESM2_subgrid_info.nc (https://zhonghuazheng.com/UrbanClimateExplorer/notebooks/CESM2_subgrid_info.html)
     subgrid_info = xr.open_dataset("../../../../CESM2_subgrid_info.nc")
-    ###### load zarr ######
+    # load zarr
     rawdata_dir = f"../../../../cesm2_raw/{forcing_variant}/{component}/{frequency}/{tablename}.zarr"
     fullds = xr.open_dataset(rawdata_dir)
     batch_size = 215
