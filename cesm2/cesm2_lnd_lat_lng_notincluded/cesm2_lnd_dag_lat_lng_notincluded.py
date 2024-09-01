@@ -79,7 +79,6 @@ def convert_cesm2_lnd_feature_zarr_to_parquet(**kwargs):
     forcing_variant = variables.get('forcing_variant')
     featurename = variables.get('featurename')
 
-    # Call the convert function from py with the extracted variables
     convert_cesm2_lnd_feature_zarr_to_parquet_workflow(forcing_variant,component,frequency,tablename,featurename)
         
 run_convert_cesm2_feature_zarr_to_parquet = PythonOperator(

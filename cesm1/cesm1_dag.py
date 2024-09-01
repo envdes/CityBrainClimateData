@@ -76,7 +76,6 @@ def convert_cesm1_feature_zarr_to_parquet(**kwargs):
     tablename = variables.get('tablename')
     featurename = variables.get('featurename')
 
-    # Call the convert function from py with the extracted variables
     convert_cesm1_feature_zarr_to_parquet_workflow(component,frequency,tablename,featurename)
         
 run_convert_cesm1_feature_zarr_to_parquet = PythonOperator(
