@@ -21,26 +21,25 @@ def convert_cesm1_feature_zarr_to_parquet_workflow(component,frequency,tablename
     parent_dir = f"../../../datadisk/cesm1_parquet/{component}/{frequency}"
     path = os.path.join(parent_dir, newfolder) 
     try:
-        # Create a new folder
+        # create a new folder
         os.makedirs(path, exist_ok=True)
         print(f"{parent_dir}/{newfolder} created") 
     except OSError as e:
         print(f"Error creating folder: {e}")
 
-
     def workflow(component,frequency,tablename,featurename,slice_start, slice_end):
-        ###### load zarr ######
+        # load zarr
         ds = xr.open_zarr(f'../../../datadisk/cesm1_raw/{component}/{frequency}/{tablename}.zarr').isel(time=slice(slice_start,slice_end))
 
-        ###### change the datetime coordinates ######
+        # change the datetime coordinates
         ds = ds.assign_coords(time = ds.indexes["time"].to_datetimeindex())
 
-        ###### convert as dataframe ######
+        # convert as dataframe
         df = ds[featurename].to_dataframe()
         del ds
         gc.collect()
 
-        ###### save as parquet ######/datadisk/cesm_parquet/.../featurename_parquet
+        # save as parquet
         newfolder = tablename+'_parquet'
         df.to_parquet(f"../../../datadisk/cesm1_parquet/{component}/{frequency}/{newfolder}/{str(slice_start)}_{str(slice_end-1)}.parquet.gzip",
                     compression='gzip') 

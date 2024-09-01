@@ -4,6 +4,7 @@ import json
 def cesm1_varinfo_to_json_workflow(s3path):
     print(f"Received component in cesm1_varinfo_to_json.py: {s3path}")
     
+    # aws-cesm1-le.csv can be downloaded from https://ncar.github.io/cesm-lens-aws/ (Data Catalog)
     cesm1dict = pd.read_csv('/root/citybrain_aws-cesm1-le.csv')
     row_with_data = cesm1dict[cesm1dict['path']==s3path]
     row_idx = row_with_data.index.values[0]
