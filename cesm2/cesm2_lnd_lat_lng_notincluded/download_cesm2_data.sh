@@ -15,7 +15,6 @@ tablename=${remaining#*/}
 tablename=${tablename%.zarr}
 tablename=${tablename//-/_}
 
-
 IFS='_' read -ra parts <<< "$tablename"
 cesmnum="${parts[0]}"
 experiment="${parts[1]}"
