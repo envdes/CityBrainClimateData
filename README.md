@@ -16,12 +16,27 @@ For example, CESM1 data pipeline:
 
 **How to run the data pipeline**
 
-In this project, Apache Airflow DAG is used to orchestrate the workflow. Replace the default S3 URI with the S3 URI of the target data and trigger the DAG execution, then monitor the progress and status of each task. 
+In this project, Apache Airflow DAG is used to orchestrate the workflow. 
 
 Before running a data pipeline: 
 - Citybrain platform access: Sign up for a Citybrain platform account 
 - Set up the environment and install required libraries
+    - [Airflow Installation](https://airflow.apache.org/docs/apache-airflow/stable/installation/index.html)
 - Donwload **aws-cesm1-le.csv** and **aws-cesm2-le.csv**
     - aws-cesm1-le.csv can be downloaded from https://ncar.github.io/cesm-lens-aws/ (Data Catalog)
     - aws-cesm2-le.csv can be downloaded from https://ncar-cesm2-lens.s3-us-west-2.amazonaws.com/catalogs/aws-cesm2-le.csv
+
+To run a data pipeline (DAG):
+1. In the DAG file, replace the default S3 URI with the S3 URI of the target data.
+    For example, in [cesm1/cesm1-dag.py](./cesm1/cesm1_dag.py), change 's3://ncar-cesm-lens/atm/daily/cesmLE-RCP85-QBOT.zarr' to 's3://ncar-cesm-lens/atm/daily/cesmLE-20C-FLNS.zarr': 
+    
+    **DAG files (xx_dag_xx.py)**:
+    - CESM1:
+        - [CESM1 DAG (cesm1_dag.py)](./cesm1/cesm1_dag.py) 
+    - CESM2:
+        - latitude and longitiude included in the data: [CESM2 DAG (cesm2_lnd_dag_lat_lng_included.py)](./cesm2/cesm2_lnd_lat_lng_included/cesm2_lnd_dag_lat_lng_included.py)
+        - latitude and longitiude not included in the data: [CESM2 DAG (cesm2_lnd_dag_lat_lng_notincluded.py)](./cesm2/cesm2_lnd_lat_lng_notincluded/cesm2_lnd_dag_lat_lng_notincluded.py)
+
+2. Trigger the DAG execution from Airflow UI or from command line. For example, to trigger [CESM1 DAG (cesm1_dag.py)](./cesm1/cesm1_dag.py): ```airflow dags trigger cesm1_dag```. The DAG will execute the tasks according to the defined task dependencies.  
+3. Then monitor the progress and status of each task from Airflow UI or from command line. 
 
