@@ -22,6 +22,7 @@ echo "frequency: $frequency"
 echo "tablename: $tablename"
 echo "featurename: $featurename"
 
+# export variables to cesm1_variables.json
 export vartype=$vartype
 export component=$component
 export frequency=$frequency

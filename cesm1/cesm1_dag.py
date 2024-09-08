@@ -36,12 +36,15 @@ dag = DAG(
     schedule_interval=None,  # Set to None for one-time execution
 )
 
+# Download data from S3
+## Replace 's3://ncar-cesm-lens/atm/daily/cesmLE-RCP85-QBOT.zarr' with the S3 URI of the target data
 task_execute_bash_script = BashOperator(
     task_id='execute_bash_script',
     bash_command = "bash /root/airflow/dags/download_cesm1_data.sh 's3://ncar-cesm-lens/atm/daily/cesmLE-RCP85-QBOT.zarr'",
     dag=dag,
 )
 
+# Get variables from json
 def extract_variables_from_json(**kwargs):
     with open('/root/airflow/dags/cesm1_variables.json', 'r') as f:
         variables = json.load(f)
@@ -66,8 +69,9 @@ run_find_table_info_in_csv = PythonOperator(
     dag=dag,
 ) 
 
+# Convert zarr to parquet
 def convert_cesm1_feature_zarr_to_parquet(**kwargs):
-    
+
     variables = kwargs['ti'].xcom_pull(task_ids='extract_variables_from_json', key='variables')
 
     vartype = variables.get('vartype')
@@ -85,6 +89,7 @@ run_convert_cesm1_feature_zarr_to_parquet = PythonOperator(
     dag=dag,
 ) 
 
+# Upload parquet files to citybrain
 def upload_parquet_to_citybrain(**kwargs):
     variables = kwargs['ti'].xcom_pull(task_ids='extract_variables_from_json', key='variables')
 
@@ -102,6 +107,7 @@ run_upload_parquet_to_citybrain = PythonOperator(
     dag=dag,
 )     
 
+# Create a table in citybrain
 def cesm1_createtable_in_citybrain(**kwargs):
     cesm1_createtable_in_citybrain_workflow()
         
@@ -123,5 +129,4 @@ run_cesm1_citybraintable_qa = PythonOperator(
 ) 
 
 # Set task dependencies
-
 task_execute_bash_script >> run_extract_variable_from_json >> run_find_table_info_in_csv >> run_convert_cesm1_feature_zarr_to_parquet >> run_upload_parquet_to_citybrain >> run_createtable_in_citybrain >> run_cesm1_citybraintable_qa
